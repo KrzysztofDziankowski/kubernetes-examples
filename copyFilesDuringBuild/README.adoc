@@ -1,0 +1,12 @@
+
+NOTE: docker version 18+ required (support for multistage)
+
+.Build image
+----
+# docker build -t conf:1.0 .
+----
+
+.Test image
+----
+# docker run --rm -it conf:1.0 ls /nginx.conf
+----

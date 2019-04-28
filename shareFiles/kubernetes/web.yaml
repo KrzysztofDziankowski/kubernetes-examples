@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  selector:
+    matchLabels:
+      run: web
+  template:
+    metadata:
+      labels:
+        run: web
+    spec:
+      initContainers:
+      - image: web:1.0
+        imagePullPolicy: IfNotPresent
+        name: init
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        command: ['sh']
+        args: ['-c', 'cp -r /web/* /export; echo ala']
+        tty: true
+        volumeMounts:
+        - mountPath: /export
+          name: content
+      containers:
+      - image: alpine
+        imagePullPolicy: IfNotPresent
+        name: server
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        command: ['cat']
+        tty: true
+        volumeMounts:
+        - mountPath: /web
+          name: content
+      volumes:
+      - name: content
+        emptyDir:
+          medium: Memory
+      restartPolicy: Always
